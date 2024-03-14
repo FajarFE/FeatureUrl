@@ -1,0 +1,34 @@
+{
+  "version": "5",
+  "dialect": "pg",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "5",
+      "when": 1710368849674,
+      "tag": "0000_daffy_big_bertha",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1710368890665,
+      "tag": "0001_shallow_vertigo",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1710409966715,
+      "tag": "0002_minor_smasher",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "5",
+      "when": 1710418751357,
+      "tag": "0003_huge_plazm",
+      "breakpoints": true
+    }
+  ]
+}
