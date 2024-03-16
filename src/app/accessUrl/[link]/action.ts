@@ -1,42 +1,33 @@
 "use server";
 import { db } from "@/lib/drizzle";
-import { eq, lt } from "drizzle-orm";
 import { shortlink } from "@/schema";
-import { redirect } from "next/dist/server/api-utils";
-export { db } from "@/lib/drizzle";
+import { eq } from "drizzle-orm";
+import { redirect } from "next/navigation";
 
 type ResponseState = {
 	accessUrl?: string | null;
 	message?: string;
-	url?: string | null;
+	url?: string;
+	Parameter?: string | null;
 };
 
+export async function getDatabase() {
+	return db;
+}
+
 export async function InputAccessUrl(
-	prevState: ResponseState,
-	params: { link: string },
 	formData: FormData
 ): Promise<ResponseState> {
-	const accessUrl = formData.get("accessUrl") as string;
-	const link = params.link;
-	let response;
-	try {
-		const dataShortLink = await db
-			.select({
-				accessUrl: shortlink.accessUrl,
-			})
-			.from(shortlink)
-			.where(eq(shortlink.shortUrl, link))
-			.limit(1);
-
-		if (dataShortLink.length > 0 && link === dataShortLink[0].accessUrl) {
-			response = { url: dataShortLink[0].accessUrl, message: "ok" };
-		} else {
-			response = { url: null, message: "error" };
-		}
-	} catch (error) {
-		console.error("Error fetching shortlink:", error);
-		response = { url: null, message: "error" };
+	const accessUrl = formData.get("accessUrl");
+	const Parameter = formData.get("Parameter");
+	let response: ResponseState = { message: "error" };
+	const database = await getDatabase();
+	const dataShortLink = await database
+		.select()
+		.from(shortlink)
+		.where(eq(shortlink.shortUrl, Parameter as string));
+	if (dataShortLink[0].accessUrl === accessUrl) {
+		return redirect(dataShortLink[0].longUrl);
 	}
-
-	return response as ResponseState;
+	return response;
 }

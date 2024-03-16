@@ -2,11 +2,13 @@
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { AdminModule } from "@/module/admin";
+import { type Session, type User } from "next-auth";
 import { db } from "@/lib/drizzle";
 import {
 	ColumnBaseConfig,
 	ColumnDataType,
 	SelectedFieldsFlat,
+	and,
 	asc,
 	desc,
 	eq,
@@ -16,15 +18,19 @@ import {
 	like,
 	lt,
 	lte,
+	or,
 	sql,
 } from "drizzle-orm";
 import { shortlink } from "@/schema";
 import Link from "next/link";
+import { headers } from "next/headers";
 import { count } from "drizzle-orm";
 import { parse } from "path";
 import { useEffect } from "react";
 import { PgColumn } from "drizzle-orm/pg-core";
+import { useSession } from "next-auth/react";
 
+import { cookies } from "next/headers";
 interface SearchParamsProps {
 	searchParams: {
 		page: string;
@@ -32,7 +38,15 @@ interface SearchParamsProps {
 	};
 }
 
+import { GET } from "@/lib/auth";
+
 export default async function Dashboard({ searchParams }: SearchParamsProps) {
+	const authsss = await auth();
+	if (!authsss) {
+		return redirect("/login");
+	}
+
+	console.log(authsss);
 	const pageNumber = searchParams.page ?? 1;
 	const shortData = searchParams.search ?? null;
 	const numberOfItems = 2;
@@ -43,9 +57,12 @@ export default async function Dashboard({ searchParams }: SearchParamsProps) {
 		.limit(numberOfItems)
 		.offset(offsetItems)
 		.where(
-			shortData !== null
-				? ilike(shortlink.longUrl, `%${shortData}%`)
-				: undefined
+			or(
+				shortData !== null
+					? ilike(shortlink.longUrl, `%${shortData}%`)
+					: undefined,
+				eq(shortlink.userId, authsss.id)
+			)
 		)
 		.groupBy(
 			shortlink.id,
@@ -53,7 +70,6 @@ export default async function Dashboard({ searchParams }: SearchParamsProps) {
 			shortlink.shortUrl,
 			shortlink.hits
 		);
-	console.log(allLinks);
 	const prevSearchParams = new URLSearchParams();
 	const nextSearchParams = new URLSearchParams();
 	const numberOfPages = Math.ceil(allLinks.length / numberOfItems);
@@ -81,12 +97,6 @@ export default async function Dashboard({ searchParams }: SearchParamsProps) {
 		nextSearchParams.delete("page");
 	}
 
-	console.log(allLinks);
-	const authsss = await auth();
-	if (!authsss) {
-		return redirect("/login");
-	}
-	console.log(allLinks);
 	return (
 		<>
 			<AdminModule

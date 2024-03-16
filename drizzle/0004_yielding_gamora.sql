@@ -1,0 +1,1 @@
+ALTER TABLE "shortlink" ADD COLUMN "publicUrl" boolean DEFAULT false NOT NULL;

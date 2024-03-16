@@ -5,6 +5,7 @@ import {
 	primaryKey,
 	integer,
 	uuid,
+	boolean,
 } from "drizzle-orm/pg-core";
 import type { AdapterAccount } from "@auth/core/adapters";
 
@@ -65,6 +66,7 @@ export const shortlink = pgTable("shortlink", {
 	shortUrl: text("url").notNull(),
 	longUrl: text("longUrl").notNull(),
 	expires: timestamp("expires", { mode: "date" }),
+	publicUrl: boolean("publicUrl").notNull().default(false),
 	accessUrl: text("accessUrl"),
 	hits: integer("hits").notNull().default(0),
 	userId: text("userId").references(() => users.id, { onDelete: "cascade" }),

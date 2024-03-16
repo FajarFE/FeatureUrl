@@ -18,7 +18,7 @@ import { useEffect, useState } from "react";
 import * as z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { createGuest } from "@/app/action";
+import { createGuest } from "./action";
 import { useFormState } from "react-dom";
 import { useToast } from "@/components/ui/use-toast";
 import { auth } from "@/lib/auth";
@@ -128,8 +128,6 @@ export const AdminModule: React.FC<Data> = ({
 		}
 		console.log(state);
 	}, [state]);
-
-	console.log(data);
 
 	return (
 		<BaseLayout>

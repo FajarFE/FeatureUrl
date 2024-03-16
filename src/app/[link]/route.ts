@@ -21,18 +21,6 @@ export async function GET(
 		.select()
 		.from(shortlink)
 		.where(eq(shortlink.shortUrl, params.link));
-	if (cache[cacheKey]) {
-		console.log(" Cache hit !", headers().get("x-forwarded-for") as string);
-		await db
-			.update(shortlink)
-			.set({ hits: sql`${shortlink.hits}+1` })
-			.where(eq(shortlink.shortUrl, cacheKey));
-		await db.insert(table.analytics).values({
-			ipAddress: headers().get("x-forwarded-for") as string,
-			shortlinkId: shortlinks[0].id,
-		});
-		return redirect(cache[cacheKey]);
-	}
 
 	if (shortlinks.length === 0) {
 		return new Response("Not found", { status: 404 });
