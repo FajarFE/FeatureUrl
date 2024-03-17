@@ -26,6 +26,8 @@ export const LandingPage = ({ data }: Data) => {
 		},
 	];
 	const [valueMotion, setValueMotion] = useState(0);
+	const [indexHover, setIndexHover] = useState(0);
+	const [isHovered, setIsHovered] = useState(false);
 	const DataLayout = [
 		{
 			name: "1",
@@ -40,12 +42,12 @@ export const LandingPage = ({ data }: Data) => {
 			url: "/admin",
 		},
 		{
-			name: "4",
-			url: "/profile",
+			name: "3",
+			url: "/admin",
 		},
 		{
-			name: "5",
-			url: "/profile",
+			name: "3",
+			url: "/admin",
 		},
 	];
 	const ref = useRef<HTMLDivElement>(null);
@@ -89,7 +91,7 @@ export const LandingPage = ({ data }: Data) => {
 		[0, 0.3, 0.5],
 		[0, 10, 0.4]
 	);
-	const translateProduct04 = useTransform(scrollYProgress, [0, 1], [0, -340]);
+	const translateProduct04 = useTransform(scrollYProgress, [0, 1], [0, -360]);
 	const translateProduct13 = useTransform(scrollYProgress, [0, 0.8], [0, -180]);
 	const translateProduct2 = useTransform(scrollYProgress, [0, 1], [0, 50]);
 
@@ -105,15 +107,18 @@ export const LandingPage = ({ data }: Data) => {
 		}
 	};
 
-	const getZIndex = (index: number) => {
-		if (index === 1 || index === 3) {
-			return 10;
-		} else if (index === 0 || index === 4) {
-			return 5;
+	const getZIndex = (index: number, isHovered: boolean, indexHover: number) => {
+		if (isHovered && index === indexHover) {
+			return 50;
 		} else {
-			return 12;
+			if (index === 1 || index === 3) {
+				return 10;
+			} else if (index === 0 || index === 4) {
+				return 5;
+			} else {
+				return 15;
+			}
 		}
-		console.log("index", index);
 	};
 
 	const getTransform = (index: number) => {
@@ -125,6 +130,16 @@ export const LandingPage = ({ data }: Data) => {
 			return;
 		}
 	};
+
+	const getTop = (index: number) => {
+		if (DataLayout.length > 3) {
+			index % 0 === 0 ? 0 : index % 2 ? 200 : index === 2 ? 70 : 990;
+		} else {
+			index % 0 === 0 ? 0 : index % 2 ? 400 : index === 2 ? 70 : 2990;
+		}
+	};
+
+	console.log(isHovered, indexHover);
 	return (
 		<>
 			<div ref={ref} className='bg-slate-950 '>
@@ -174,6 +189,11 @@ export const LandingPage = ({ data }: Data) => {
 				</div>
 				<div className='w-full h-screen bg-gradient-to-b relative overflow-hidden from-slate-950 to-slate-700'>
 					<Meteors className='mt-40' number={100} />
+					<div
+						className='absolute h-[600px] w-screen pointer-events-none -top-24 z-[2]  bg-slate-950 '
+						style={{
+							maskImage: "linear-gradient(black, transparent)",
+						}}></div>
 					<div className='gap-4 flex flex-col'>
 						<motion.h2
 							style={{
@@ -193,19 +213,26 @@ export const LandingPage = ({ data }: Data) => {
 							className=' relative  text-lg md:text-4xl flex justify-center items-center font-bold text-left bg-clip-text text-transparent bg-gradient-to-b from-neutral-50 to-neutral-400 bg-opacity-100'>
 							OWKOADOAODAODAODOD
 						</motion.h2>
-					</div>
-
+					</div>{" "}
 					<div
-						className='absolute h-[600px] w-screen pointer-events-none -top-24 z-[2]  bg-slate-950 '
+						className='absolute h-[600px] w-screen pointer-events-none bottom-0 z-[40]  bg-slate-950 '
 						style={{
-							maskImage: "linear-gradient(black, transparent)",
+							maskImage: "linear-gradient(transparent, black 90%)",
 						}}></div>
 					<div className='flex flex-row h-full justify-center items-center gap-3  relative '>
 						{DataLayout.map((item, index: number) => {
 							return (
 								<div
-									style={{ zIndex: getZIndex(index) }}
-									className='h-[500px] relative [perspective:800px] bottom-[40px] w-[300px]'
+									onMouseEnter={() => {
+										setIndexHover(index);
+										setIsHovered(true);
+									}}
+									onMouseLeave={() => {
+										setIndexHover(0);
+										setIsHovered(false);
+									}}
+									style={{ zIndex: getZIndex(index, isHovered, indexHover) }}
+									className='h-[500px] relative [perspective:800px] bottom-[40px] w-[500px]'
 									key={index}>
 									<motion.div
 										style={{
@@ -217,18 +244,18 @@ export const LandingPage = ({ data }: Data) => {
 												index % 0 === 0
 													? 0
 													: index % 2
-													? 180
+													? 120
 													: index === 2
 													? 0
-													: 290
+													: 200
 											}px`,
 											left: `${
 												index === 1
 													? 70
 													: index === 0
-													? 110
+													? 140
 													: index === 4
-													? -110
+													? -140
 													: index === 3
 													? -70
 													: 0
@@ -243,7 +270,7 @@ export const LandingPage = ({ data }: Data) => {
 						})}
 					</div>
 				</div>
-				<div className='h-screen w-full bg-gradient-to-b from-slate-700 to-slate-950'>
+				<div className='h-screen w-full bg-gradient-to-b from-slate-950 from-25%  to-slate-700  '>
 					awodkoawd
 				</div>
 			</div>
