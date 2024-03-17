@@ -68,13 +68,13 @@ export const shortlink = pgTable("shortlink", {
 	expires: timestamp("expires", { mode: "date" }),
 	publicUrl: boolean("publicUrl").notNull().default(false),
 	accessUrl: text("accessUrl"),
+	customDomainId: text("customDomainId").references(() => customDomain.id),
 	hits: integer("hits").notNull().default(0),
 	userId: text("userId").references(() => users.id, { onDelete: "cascade" }),
 	createdAt: timestamp("createdAt", { mode: "date" }).defaultNow(),
 	updatedAt: timestamp("updatedAt", { mode: "date" }).defaultNow(),
 	deletedAt: timestamp("deletedAt", { mode: "date" }),
 });
-
 export const analytics = pgTable("analytics", {
 	id: uuid("id").defaultRandom().primaryKey(),
 	shortlinkId: uuid("shortlinkId").references(() => shortlink.id, {
@@ -82,4 +82,23 @@ export const analytics = pgTable("analytics", {
 	}),
 	ipAddress: text("ip").notNull(),
 	visitedAt: timestamp("visitedAt", { mode: "date" }).defaultNow(),
+});
+
+export const customDomain = pgTable("customDomain", {
+	id: uuid("id").defaultRandom().primaryKey(),
+	domain: text("domain").notNull(),
+	userId: text("userId").references(() => users.id, { onDelete: "cascade" }),
+	createdAt: timestamp("createdAt", { mode: "date" }).defaultNow(),
+	updatedAt: timestamp("updatedAt", { mode: "date" }).defaultNow(),
+	deletedAt: timestamp("deletedAt", { mode: "date" }),
+});
+
+export const subscriptions = pgTable("subscription", {
+	id: uuid("id").defaultRandom().primaryKey(),
+	beginsAt: timestamp("beginsAt", { mode: "date" }).defaultNow(),
+	endsAt: timestamp("endsAt", { mode: "date" }),
+	userId: text("userId").references(() => users.id, { onDelete: "cascade" }),
+	createdAt: timestamp("createdAt", { mode: "date" }).defaultNow(),
+	updatedAt: timestamp("updatedAt", { mode: "date" }).defaultNow(),
+	deletedAt: timestamp("deletedAt", { mode: "date" }),
 });

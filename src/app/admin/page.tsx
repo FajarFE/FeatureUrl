@@ -1,7 +1,7 @@
 "use server";
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
-import { AdminModule } from "@/module/admin";
+import { AdminModule } from "@/modules/admin";
 import { type Session, type User } from "next-auth";
 import { db } from "@/lib/drizzle";
 import {
@@ -41,12 +41,12 @@ interface SearchParamsProps {
 import { GET } from "@/lib/auth";
 
 export default async function Dashboard({ searchParams }: SearchParamsProps) {
-	const authsss = await auth();
-	if (!authsss) {
+	const authsssssssss = await auth();
+	if (!authsssssssss) {
 		return redirect("/login");
 	}
 
-	console.log(authsss);
+	console.log(authsssssssss);
 	const pageNumber = searchParams.page ?? 1;
 	const shortData = searchParams.search ?? null;
 	const numberOfItems = 2;
@@ -61,7 +61,7 @@ export default async function Dashboard({ searchParams }: SearchParamsProps) {
 				shortData !== null
 					? ilike(shortlink.longUrl, `%${shortData}%`)
 					: undefined,
-				eq(shortlink.userId, authsss.id)
+				eq(shortlink.userId, authsssssssss.id)
 			)
 		)
 		.groupBy(

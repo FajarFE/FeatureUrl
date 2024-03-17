@@ -36,6 +36,13 @@
       "when": 1710492246605,
       "tag": "0004_yielding_gamora",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "5",
+      "when": 1710696494495,
+      "tag": "0005_square_daredevil",
+      "breakpoints": true
     }
   ]
 }
